@@ -132,34 +132,34 @@ const server = http.createServer((req, res) => {
     // LIST FILES
     // ===============================
     if (req.method === 'GET' && req.url === '/files') {
+  const result = [];
 
-        try {
+  function walk(dir, relative = '') {
+    const items = fs.readdirSync(dir);
 
-            const files = getAllFiles(STORAGE_DIR);
+    for (const item of items) {
+      const full = path.join(dir, item);
+      const rel = path.join(relative, item);
 
-            res.writeHead(200, {
-                'Content-Type': 'application/json'
-            });
-
-            res.end(JSON.stringify({
-                count: files.length,
-                files
-            }, null, 2));
-
-        } catch (err) {
-
-            res.writeHead(500, {
-                'Content-Type': 'application/json'
-            });
-
-            res.end(JSON.stringify({
-                success: false,
-                error: err.message
-            }));
-        }
-
-        return;
+      if (fs.statSync(full).isDirectory()) {
+        walk(full, rel);
+      } else if (item.endsWith('.json')) {
+        result.push({
+          file: rel,
+          content: JSON.parse(fs.readFileSync(full, 'utf8'))
+        });
+      }
     }
+  }
+
+  walk(STORAGE_DIR);
+
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  return res.end(JSON.stringify({
+    count: result.length,
+    uploads: result
+  }, null, 2));
+}
 
     // ===============================
     // VIEW FILE CONTENT
